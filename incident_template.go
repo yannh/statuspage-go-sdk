@@ -1,8 +1,8 @@
 package statuspagesdk
 
 type IncidentTemplate struct {
-	GroupID      string `json:"group_id"`
 	Name         string `json:"name"`
+	GroupID      string `json:"group_id"`
 	UpdateStatus string `json:"update_status"`
 	Title        string `json:"suffix"`
 	Body         int32  `json:"y_axis_min"`
@@ -17,7 +17,7 @@ type IncidentTemplateFull struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
-func CreateIncidentTemplate(client *Client, pageID, incidentTemplate *IncidentTemplate) (*IncidentTemplateFull, error) {
+func CreateIncidentTemplate(client *Client, pageID string, incidentTemplate *IncidentTemplate) (*IncidentTemplateFull, error) {
 	var i IncidentTemplateFull
 	err := createResource(
 		client,
