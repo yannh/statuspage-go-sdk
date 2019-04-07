@@ -1,13 +1,13 @@
 package statuspagesdk
 
 type IncidentTemplate struct {
-	Name         string `json:"name"`
-	GroupID      string `json:"group_id"`
-	UpdateStatus string `json:"update_status"`
-	Title        string `json:"suffix"`
-	Body         int32  `json:"y_axis_min"`
-	ComponentIDs int32  `json:"component_ids"`
-	ShouldTweet  int32  `json:"should_tweet"`
+	Name         string   `json:"name"`
+	GroupID      string   `json:"group_id"`
+	UpdateStatus string   `json:"update_status"`
+	Title        string   `json:"suffix"`
+	Body         string   `json:"y_axis_min"`
+	ComponentIDs []string `json:"component_ids"`
+	ShouldTweet  bool     `json:"should_tweet"`
 }
 
 type IncidentTemplateFull struct {
