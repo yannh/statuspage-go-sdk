@@ -25,8 +25,8 @@ type MetricsProviderFull struct {
 	YAxisMax           string `json:"y_axis_max"`
 	DecimalPlaces      string `json:"decimal_places"`
 	Disabled           bool   `json:"disabled"`
-	AccountID          bool   `json:"account_id"`
-	LastRevalidatedAt  bool   `json:"last_revalidated_at"`
+	AccountID          string `json:"account_id"`
+	LastRevalidatedAt  string `json:"last_revalidated_at"`
 	CreatedAt          string `json:"created_at"`
 	UpdatedAt          string `json:"updated_at"`
 }
