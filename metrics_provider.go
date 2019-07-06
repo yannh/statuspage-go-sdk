@@ -33,7 +33,7 @@ type MetricsProviderFull struct {
 
 func (mp *MetricsProvider) validate() error {
 	switch mp.Type {
-	case "PingdomMetricsProvider":
+	case "Pingdom":
 		if mp.Email == "" {
 			return fmt.Errorf("parameter email is required for Pingdom Metrics Provider")
 		}
@@ -43,22 +43,22 @@ func (mp *MetricsProvider) validate() error {
 		if mp.ApplicationKey == "" {
 			return fmt.Errorf("parameter application_key is required for Pingdom Metrics Provider")
 		}
-	case "NewRelicMetricsProvider":
+	case "NewRelic":
 		if mp.APIKey == "" {
 			return fmt.Errorf("parameter api_key is required for NewRelic Metrics Provider")
 		}
-	case "LibratoMetricsProvider":
+	case "Librato":
 		if mp.Email == "" {
 			return fmt.Errorf("parameter email is required for Librato Metrics Provider")
 		}
 		if mp.APIToken == "" {
 			return fmt.Errorf("parameter api_token is required for Librato Metrics Provider")
 		}
-	case "DatadogMetricsProvider":
+	case "Datadog":
 		if mp.APIKey == "" {
 			return fmt.Errorf("parameter api_key is required for Datadog Metrics Provider")
 		}
-		if mp.APIToken == "" {
+		if mp.ApplicationKey == "" {
 			return fmt.Errorf("parameter application_key is required for Datadog Metrics Provider")
 		}
 	}
