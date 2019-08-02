@@ -2,11 +2,11 @@ package statuspagesdk
 
 type Component struct {
 	Name               string `json:"name"`
-	Description        string `json:"description,omitempty"`
+	Description        string `json:"description"`
 	GroupID            string `json:"group_id,omitempty"`
-	Showcase           bool   `json:"showcase,omitempty"`
+	Showcase           bool   `json:"showcase"`
 	Status             string `json:"status,omitempty"`
-	OnlyShowIfDegraded bool   `json:"only_show_if_degraded,omitempty"`
+	OnlyShowIfDegraded bool   `json:"only_show_if_degraded"`
 }
 
 type ComponentFull struct {

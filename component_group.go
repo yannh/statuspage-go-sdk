@@ -2,7 +2,7 @@ package statuspagesdk
 
 type ComponentGroup struct {
 	Name        string   `json:"name"`
-	Description string   `json:"description,omitempty"`
+	Description string   `json:"description"`
 	Components  []string `json:"components,omitempty"`
 }
 
