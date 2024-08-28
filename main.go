@@ -4,17 +4,17 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/go-retryablehttp"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 const apiRoot = "https://api.statuspage.io/v1"
 
 // HTTPClient is the http wrapper for the application
 type HTTPClient interface {
-	Do(req *http.Request) (*http.Response, error)
+	Do(req *retryablehttp.Request) (*http.Response, error)
 }
 
 type IClient interface {
@@ -29,7 +29,7 @@ type Client struct {
 func NewClient(token string) *Client {
 	return &Client{
 		token:      token,
-		httpClient: &http.Client{},
+		httpClient: NewRetryableClient(),
 	}
 }
 
@@ -52,23 +52,13 @@ func (client *Client) doHTTPRequest(method, endpoint string, item interface{}) (
 
 		body = bytes.NewReader(data)
 	}
-	req, err := http.NewRequest(method, componentURL, body)
+	req, err := retryablehttp.NewRequest(method, componentURL, body)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set("Authorization", "OAuth "+client.token)
 
-	maxRetries := 10
-	retryInterval := 10 * time.Second
-
-	// Basic Retry logic around rate limiting
 	resp, err = client.httpClient.Do(req)
-	retries := 0
-	for retries = 1; resp != nil && resp.StatusCode == 420 && retries <= maxRetries; retries = retries + 1 {
-		time.Sleep(retryInterval)
-		resp, err = client.httpClient.Do(req)
-	}
-
 	return resp, err
 }
 
