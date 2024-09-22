@@ -38,7 +38,7 @@ func retryPolicy(ctx context.Context, resp *http.Response, err error) (bool, err
 func backoffPolicy(min, max time.Duration, attemptNum int, resp *http.Response) time.Duration {
 	if resp != nil {
 		if resp.StatusCode == StatusRateLimitExceeded {
-			if sleep, err := parseRetryAfterHeader(resp.Header.Get("Retry-After")); err != nil {
+			if sleep, err := parseRetryAfterHeader(resp.Header.Get("Retry-After")); err == nil {
 				return sleep
 			}
 		}
