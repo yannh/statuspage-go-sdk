@@ -2,7 +2,6 @@ package statuspage
 
 import (
 	"bytes"
-	"github.com/hashicorp/go-retryablehttp"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -10,7 +9,7 @@ import (
 )
 
 type mockHTTPClient struct {
-	req        *retryablehttp.Request
+	req        *http.Request
 	statusCode int
 }
 
@@ -20,7 +19,7 @@ func NewMockHTTPClient(statusCode int) *mockHTTPClient {
 	}
 }
 
-func (c *mockHTTPClient) Do(req *retryablehttp.Request) (*http.Response, error) {
+func (c *mockHTTPClient) Do(req *http.Request) (*http.Response, error) {
 	c.req = req
 	return &http.Response{StatusCode: c.statusCode}, nil
 }
