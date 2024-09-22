@@ -12,7 +12,7 @@ func TestBackOffPolicy(t *testing.T) {
 
 	d := backoffPolicy(1, 50, 2, &resp)
 
-	if d.String() != "30" {
+	if d.String() != "30s" {
 		t.Errorf("%s", d.String())
 	}
 }
