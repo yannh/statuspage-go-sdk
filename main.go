@@ -7,8 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/hashicorp/go-retryablehttp"
 )
 
 const apiRoot = "https://api.statuspage.io/v1"
@@ -53,7 +51,7 @@ func (client *Client) doHTTPRequest(method, endpoint string, item interface{}) (
 
 		body = bytes.NewReader(data)
 	}
-	req, err := retryablehttp.NewRequest(method, componentURL, body)
+	req, err := http.NewRequest(method, componentURL, body)
 	if err != nil {
 		return nil, err
 	}

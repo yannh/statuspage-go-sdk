@@ -2,10 +2,11 @@ package statuspage
 
 import (
 	"context"
-	"github.com/hashicorp/go-retryablehttp"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 func NewRetryableClient() *retryablehttp.Client {
@@ -16,13 +17,17 @@ func NewRetryableClient() *retryablehttp.Client {
 }
 
 const (
-	RateLimitExceededStatusCode = 420
+	StatusRateLimitExceeded = 420
 )
 
 // We're wrapping original retryablehttp.DefaultRetryPolicy and adding retry on 420 HTTP code
 func retryPolicy(ctx context.Context, resp *http.Response, err error) (bool, error) {
-	defaultShouldRetry, _ := retryablehttp.DefaultRetryPolicy(ctx, resp, err)
-	isRateLimited := resp != nil && resp.StatusCode == RateLimitExceededStatusCode
+	defaultShouldRetry, err := retryablehttp.DefaultRetryPolicy(ctx, resp, err)
+	if err != nil {
+		return false, err
+	}
+
+	isRateLimited := resp != nil && resp.StatusCode == StatusRateLimitExceeded
 	shouldRetry := defaultShouldRetry || isRateLimited
 	return shouldRetry, nil
 }
@@ -31,7 +36,7 @@ func retryPolicy(ctx context.Context, resp *http.Response, err error) (bool, err
 // retryablehttp already implements this behaviour, but it's executed only for 429 and 503 HTTP codes, and we need it for 420 HTTP code as well
 func backoffPolicy(min, max time.Duration, attemptNum int, resp *http.Response) time.Duration {
 	if resp != nil {
-		if resp.StatusCode == RateLimitExceededStatusCode {
+		if resp.StatusCode == StatusRateLimitExceeded {
 			if sleep, ok := parseRetryAfterHeader(resp.Header["Retry-After"]); ok {
 				return sleep
 			}
