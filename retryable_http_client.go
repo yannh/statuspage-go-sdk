@@ -2,6 +2,7 @@ package statuspage
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -37,7 +38,7 @@ func retryPolicy(ctx context.Context, resp *http.Response, err error) (bool, err
 func backoffPolicy(min, max time.Duration, attemptNum int, resp *http.Response) time.Duration {
 	if resp != nil {
 		if resp.StatusCode == StatusRateLimitExceeded {
-			if sleep, ok := parseRetryAfterHeader(resp.Header["Retry-After"]); ok {
+			if sleep, err := parseRetryAfterHeader(resp.Header.Get("Retry-After")); err != nil {
 				return sleep
 			}
 		}
@@ -47,17 +48,16 @@ func backoffPolicy(min, max time.Duration, attemptNum int, resp *http.Response) 
 }
 
 // Code partially copied from retryablehttp.parseRetryAfterHeader
-func parseRetryAfterHeader(headers []string) (time.Duration, bool) {
-	if len(headers) == 0 || headers[0] == "" {
-		return 0, false
+func parseRetryAfterHeader(retryAfter string) (time.Duration, error) {
+	if retryAfter == "" {
+		return 0, fmt.Errorf("response Header Retry-After empty or not set")
 	}
-	header := headers[0]
 	// Retry-After: 60
-	if sleep, err := strconv.ParseInt(header, 10, 64); err == nil {
+	if sleep, err := strconv.ParseInt(retryAfter, 10, 64); err == nil {
 		if sleep < 0 { // a negative sleep doesn't make sense
-			return 0, false
+			return 0, fmt.Errorf("response Header Retry-After set to negative value: %s", retryAfter)
 		}
-		return time.Second * time.Duration(sleep), true
+		return time.Second * time.Duration(sleep), nil
 	}
-	return 0, true
+	return 0, nil
 }
