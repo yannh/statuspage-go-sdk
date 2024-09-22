@@ -4,17 +4,18 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/go-retryablehttp"
 	"io"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 const apiRoot = "https://api.statuspage.io/v1"
 
 // HTTPClient is the http wrapper for the application
 type HTTPClient interface {
-	Do(req *retryablehttp.Request) (*http.Response, error)
+	Do(req *http.Request) (*http.Response, error)
 }
 
 type IClient interface {
@@ -29,7 +30,7 @@ type Client struct {
 func NewClient(token string) *Client {
 	return &Client{
 		token:      token,
-		httpClient: NewRetryableClient(),
+		httpClient: NewRetryableClient().StandardClient(),
 	}
 }
 
