@@ -9,19 +9,19 @@ import (
 )
 
 type mockHTTPClient struct {
-	req     *http.Request
-	errCode int
+	req        *http.Request
+	statusCode int
 }
 
-func NewMockHTTPClient(errCode int) *mockHTTPClient {
+func NewMockHTTPClient(statusCode int) *mockHTTPClient {
 	return &mockHTTPClient{
-		errCode: errCode,
+		statusCode: statusCode,
 	}
 }
 
 func (c *mockHTTPClient) Do(req *http.Request) (*http.Response, error) {
 	c.req = req
-	return &http.Response{StatusCode: c.errCode}, nil
+	return &http.Response{StatusCode: c.statusCode}, nil
 }
 
 type mockClient struct {
@@ -97,7 +97,8 @@ func TestDoHTTPRequest(t *testing.T) {
 		}
 
 		bodyWant := new(bytes.Buffer)
-		bodyWant.ReadFrom(mc.req.Body)
+		getBody, _ := mc.req.GetBody()
+		bodyWant.ReadFrom(getBody)
 		bodyWantS := bodyWant.String()
 
 		bodyHave := new(bytes.Buffer)
